@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1623963278962.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3249949505",
+    "id" : "E62DA801",
+    "lastKnownWriteTime" : 1628322191,
+    "last_content_update" : 1628322191215,
+    "path" : "C:/Users/drmum/OneDrive - Higher Education Commission/Carbapenemase Metaanalysis/Forest Plots/FP2/FP2_C.R",
+    "project_path" : "FP2_C.R",
+    "properties" : {
+        "cursorPosition" : "10,11",
+        "scrollLine" : "5"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

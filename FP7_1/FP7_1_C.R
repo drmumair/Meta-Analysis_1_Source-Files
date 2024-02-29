@@ -1,0 +1,62 @@
+
+library(readxl)
+FP7_1 <- read_excel("C:/Users/drmum/OneDrive - Higher Education Commission/Carbapenemase Metaanalysis/Forest Plots/FPData2.xlsx", 
+                  sheet = "FP7_1", range = "A1:X16")
+
+FP7_1IR <- escalc(measure = "IR", xi = FP7_1$xi, ti = FP7_1$ti, data = FP7_1, replace = FALSE)
+
+FP7_1RMA <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP7_1IR)
+
+FP7_1RMA1 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, mods = ~ SubGroup, data = FP7_1IR)
+
+
+###########
+
+pdf(file = "FP7_1.pdf", family = "Times", height = 14, width = 8.5)
+
+par(mar = c(4,7,1,5))
+
+## c(4,8,1,6)
+
+forest.rma(FP7_1RMA, slab = paste(FP7_1$Author, FP7_1$`Pub Year`), ilab = cbind(FP7_1$ilab2, FP7_1$ilab1), ilab.pos = 4, 
+           ilab.xpos = c(1.545, 1.215), digits = c(2, 1), at = c(-0.5, 0, 0.5, 1, 1.5), mlab = "",
+           refline = 0.13, xlim = c(-1.6, 2.8), showweights = TRUE, efac = 0.75, header = FALSE, 
+           cex = 0.65, rows = c(15:1), ylim = c(0, 103), cex.lab = 0.75, top = 87)
+
+text(-1.6, c(-1), pos = 4, c("RE Model for All Studies"), font = 2, cex = 0.65)
+text(-1.6, c(-2.25), bquote(paste("(",Tau^2, " = ",.(formatC(FP7_1RMA$tau2, digits=4, format="f")), ", df = ", 
+                                  .(FP7_1RMA$k - FP7_1RMA$p), ", ", "Q = ", .(formatC(FP7_1RMA$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(-3.25), bquote(paste("p ", .(metafor:::.pval(FP7_1RMA$QEp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                  .(formatC(FP7_1RMA$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(FP7_1RMA$I2, digits=1, format="f")), 
+                                  "%)")), pos=4, cex=0.65)
+
+
+text(-1.6, c(16), pos = 4, c("Naive Isolates"), font = 2, cex = 0.8)
+
+text(-1.6, c( 19.25 ), pos = 4, c("Enterobacteriaceae + Non-Enterobacteriaceae"), font = 4, cex = 0.9)
+
+text(-1.6, c(18), pos = 4, c("Subgroups/Author(s)"), font = 2, cex = 0.75)
+text(1.545, c(19), pos = 4, c("NDM"), font = 2, cex = 0.75)
+text(1.545, c(18), pos = 4, c("Gene(s)"), font = 2, cex = 0.75)
+text(1.215, c(19), pos = 4, c("Trait-"), font = 2, cex = 0.75)
+text(1.215, c(18), pos = 4, c("Species"), font = 2, cex = 0.75)
+text(1.9274, c(18), pos = 4, c("Weight% Pr[95% CI]"), font = 2, cex = 0.75)
+
+
+dev.off()
+
+#####################################
+
+pdf(file = "FP7_1inf.pdf", family = "Times", height = 11, width = 8.5)
+
+par(mar = c(5,6,3,4))
+
+inf <- influence(FP7_1RMA)
+
+plot(inf, layout=c(8,1))
+
+dev.off()
+
+
+

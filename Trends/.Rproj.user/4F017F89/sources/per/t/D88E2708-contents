@@ -1,0 +1,52 @@
+
+library(readxl)
+Trend1_2 <- read_excel("C:/Users/drmum/OneDrive - Higher Education Commission/Carbapenemase Metaanalysis/Forest Plots/TrendCharts2.xlsx", 
+                           sheet = "Trend1_2", range = "A1:G13")
+
+##########
+
+ggplot(Trend1, aes(x = PubYear, y = IR, group = 1)) + geom_point() + geom_line() + 
+  geom_ribbon(aes(ymin = LI, ymax = UI), linetype = 2, alpha = 0.1) 
+
+ggplot(Trend2, aes(x = PubYear, y = IR, group = 1)) + geom_point() + geom_line() + 
+  geom_ribbon(aes(ymin = LI, ymax = UI), linetype = 2, alpha = 0.1)
+
+##########
+
+ggplot() + geom_line(aes(x = PubYear, y = IR, group = 1), size = 0.8, colour = "blue", data = Trend1) +
+  
+  geom_line(aes(x = PubYear, y = IR, group = 2), size = 0.8, colour = "red", data = Trend2)
+
+##########
+
+ggplot(Trend1, aes(x = PubYear, y = IR, group = 1)) +
+  geom_line(size = 0.8, colour = "blue") +
+  geom_errorbar( aes(ymin = LI, ymax = UI), size = 0.8, width = 0.2, colour = "blue") +
+  geom_point(size = 3, colour = "blue")
+
+ggplot(Trend2, aes(x = PubYear, y = IR, group = 1)) +
+  geom_line(size = 0.8, colour = "red") +
+  geom_errorbar( aes(ymin = LI, ymax = UI), size = 0.8, width = 0.2, colour = "red") +
+  geom_point(size = 3, colour = "red")
+
+##########
+
+pdf(file = "Trend1.pdf", family = "Times", height = 7, width = 9)
+
+ggplot(Trend1_2, aes(PubYear, IR, color = Group)) +
+  
+  geom_jitter(position = position_jitter(0.2)) +
+  
+  geom_line(aes(group = Group), size = 0.5, data = Trend1_2)  + scale_shape_manual(values = c(19, 15)) +
+  
+  geom_errorbar( aes(ymin = LI, ymax = UI), size = 0.5, width = 0.1, data = Trend1_2) +
+  
+  geom_point(aes(shape = Group, color = Group), size = 3, data = Trend1_2) + xlab("Publication Year") + ylab("Incidence Rate (IR)") +
+  
+  scale_color_manual(values = c("firebrick1", "deepskyblue2")) +
+  
+  theme(legend.position = "top", legend.text=element_text(size = 12), axis.text = element_text(size = 12),
+        
+        axis.line = element_line(colour = "black"), axis.title = element_text(size = 12, face="bold"))
+
+dev.off()

@@ -1,0 +1,123 @@
+library(readxl)
+FP1 <- read_excel("C:/Users/lina4064/OneDrive - Higher Education Commission/Carbapenemase Metaanalysis/Forest Plots/Inf_Diag_Ec_Kp/FPData2.xlsx", 
+                      sheet = "FP1", range = "A1:U55")
+
+FP1IR <- escalc(measure = "IR", xi = FP1$xi, ti = FP1$ti, data = FP1, replace = FALSE)
+
+FP1RMA <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP1IR)
+
+FP1RMA1 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, mods = ~ SubGroup, data = FP1IR)
+
+
+###########
+
+pdf(file = "FP1.pdf", family = "Times", height = 14, width = 8.5)
+
+par(mar = c(4,7,1,5))
+
+## c(4,8,1,6)
+
+forest.rma(FP1RMA, slab = paste(FP1$Author, FP1$`Pub Year`), ilab = cbind(FP1$ilab2, FP1$ilab1), ilab.pos = 4, 
+           ilab.xpos = c(1.545, 1.215), digits = c(2, 1), at = c(-0.5, 0, 0.5, 1, 1.5), mlab = "",
+           refline = 0.09, xlim = c(-1.6, 2.8), showweights = TRUE, efac = 0.75, header = FALSE, 
+           cex = 0.65, rows = c(73:61, 55:49, 43:39, 33:5), ylim = c(-3, 103), cex.lab = 0.75, top = 29)
+
+text(-1.6, c(-1), pos = 4, c("RE Model for All Studies"), font = 2, cex = 0.65)
+text(-1.6, c(-2.25), bquote(paste("(",Tau^2, " = ",.(formatC(FP1RMA$tau2, digits=4, format="f")), ", df = ", 
+                                  .(FP1RMA$k - FP1RMA$p), ", ", "Q = ", .(formatC(FP1RMA$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(-3.25), bquote(paste("p ", .(metafor:::.pval(FP1RMA$QEp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                  .(formatC(FP1RMA$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(FP1RMA$I2, digits=1, format="f")), 
+                                  "%)")), pos=4, cex=0.65)
+
+text(-1.6, c(-4.5), pos = 4, c("Test for Subgroup Differences"), font = 2, cex = 0.65)
+text(-1.6, c(-5.75), bquote(paste("(", Tau^2, " = ",.(formatC(FP1RMA1$tau2, digits=4, format="f")),", df = ", .(FP1RMA1$p - 1),
+                                  ", ", Q[M], " = ", .(formatC(FP1RMA1$QM, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(-6.75), bquote(paste("p ", .(metafor:::.pval(FP1RMA1$QMp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                  .(formatC(FP1RMA1$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(FP1RMA1$I2, digits=1, format="f")), 
+                                  "%)")), pos=4, cex=0.65)
+
+
+text(-1.6, c(74, 56, 44), pos = 4, c("Escherichia coli", "Klebsiella pneumoniae", "Salmonella enterica"), font = 4, cex = 0.8)
+
+text(-1.6, c( 34 ), pos = 4, c("Unsorted"), font = 2, cex = 0.8)
+
+text(-1.6, c( 77.25 ), pos = 4, c("Enterobacteriaceae"), font = 4, cex = 0.9)
+
+
+text(-1.6, c(76), pos = 4, c("Subgroups/Author(s)"), font = 2, cex = 0.75)
+text(1.545, c(76), pos = 4, c("Trait"), font = 2, cex = 0.75)
+text(1.215, c(76), pos = 4, c("Sample"), font = 2, cex = 0.75)
+text(1.9274, c(76), pos = 4, c("Weight% Pr[95% CI]"), font = 2, cex = 0.75)
+
+RMASG1 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP1IR, subset = (SubGroup=="Escherichia coli")) 
+RMASG2 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP1IR, subset = (SubGroup=="Klebsiella pneumoniae")) 
+RMASG3 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP1IR, subset = (SubGroup=="Salmonella")) 
+RMASG4 <- rma(yi = yi, vi = vi, method = "DL", knha = TRUE, data = FP1IR, subset = (SubGroup=="Enterobacteriaceae")) 
+
+
+addpoly(RMASG1, row = 58.5, cex = 0.7, mlab = "", border = 0, col = rgb(64, 64, 64, maxColorValue = 255))
+addpoly(RMASG2, row = 46.5, cex = 0.7, mlab = "", border = 0, col = rgb(64, 64, 64, maxColorValue = 255))
+addpoly(RMASG3, row = 36.5, cex = 0.7, mlab = "", border = 0, col = rgb(64, 64, 64, maxColorValue = 255))
+addpoly(RMASG4, row = 2.5, cex = 0.7, mlab = "", border = 0, col = rgb(64, 64, 64, maxColorValue = 255))
+
+
+text(-1.6, c(59.75), pos = 4, c("RE Model for Subgroup"), font = 2, cex = 0.65)
+text(-1.6, c(58.5), bquote(paste("(",Tau^2, " = ",.(formatC(RMASG1$tau2, digits=4, format="f")), ", df = ", 
+                                 .(RMASG1$k - RMASG1$p), ", ", "Q = ", .(formatC(RMASG1$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(57.5), bquote(paste("p ", .(metafor:::.pval(RMASG1$QEp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                 .(formatC(RMASG1$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(RMASG1$I2, digits=1, format="f")), 
+                                 "%)")), pos=4, cex=0.65)
+
+text(-1.6, c(47.75), pos = 4, c("RE Model for Subgroup"), font = 2, cex = 0.65)
+text(-1.6, c(46.5), bquote(paste("(",Tau^2, " = ",.(formatC(RMASG2$tau2, digits=4, format="f")), ", df = ", 
+                                 .(RMASG2$k - RMASG2$p), ", ", "Q = ", .(formatC(RMASG2$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(45.5), bquote(paste("p ", .(metafor:::.pval(RMASG2$QEp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                 .(formatC(RMASG2$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(RMASG2$I2, digits=1, format="f")), 
+                                 "%)")), pos=4, cex=0.65)
+
+text(-1.6, c(37.75), pos = 4, c("RE Model for Subgroup"), font = 2, cex = 0.65)
+text(-1.6, c(36.5), bquote(paste("(",Tau^2, " = ",.(formatC(RMASG3$tau2, digits=4, format="f")), ", df = ", 
+                                 .(RMASG3$k - RMASG3$p), ", ", "Q = ", .(formatC(RMASG3$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(35.5), bquote(paste("p ", .(metafor:::.pval(RMASG3$QEp, digits=4, showeq=TRUE, sep=" ")), "; ",H^2, " = ", 
+                                 .(formatC(RMASG3$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(RMASG3$I2, digits=1, format="f")), 
+                                 "%)")), pos=4, cex=0.65)
+
+text(-1.6, c(3.75), pos = 4, c("RE Model for Subgroup"), font = 2, cex = 0.65)
+text(-1.6, c(2.5), bquote(paste("(",Tau^2, " = ",.(formatC(RMASG4$tau2, digits=4, format="f")), ", df = ", 
+                                 .(RMASG4$k - RMASG4$p), ", ", "Q = ", .(formatC(RMASG4$QE, digits=2, format="f")), ",")), pos=4, cex=0.65)
+
+text(-1.6, c(1.5), bquote(paste("p ", .(metafor:::.pval(RMASG4$QEp, digits=4, showeq=TRUE, sep=" ")), "; ", H^2, " = ", 
+                                 .(formatC(RMASG4$H2, digits=1, format="f")), ", ", I^2, " = ", .(formatC(RMASG4$I2, digits=1, format="f")), 
+                                 "%)")), pos=4, cex=0.65)
+
+
+dev.off()
+
+#####################################
+
+pdf(file = "FP1inf.pdf", family = "Times", height = 11, width = 8.5)
+
+par(mar = c(5,6,3,4))
+
+inf <- influence(FP1RMA)
+
+plot(inf, layout=c(8,1))
+
+dev.off()
+
+#####################################
+
+pdf(file = "FP1rad.pdf", family = "Times", height = 11, width = 7.5)
+
+par(mar = c(5,5,3,3))
+
+radial(FP1RMA)
+
+dev.off()
+
+
